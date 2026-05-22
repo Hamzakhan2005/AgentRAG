@@ -1,0 +1,44 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --cream: #f2efe9;
+  --greige: #e8e4dc;
+  --sage: #6b7c5c;
+  --sage-light: #8a9e78;
+  --charcoal: #2c2c2a;
+  --charcoal-light: #4a4a47;
+  --muted: #9a9690;
+  --white: #fafaf8;
+  --border: #d4cfc7;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Space Grotesk", sans-serif;
+  background-color: var(--cream);
+  color: var(--charcoal);
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
