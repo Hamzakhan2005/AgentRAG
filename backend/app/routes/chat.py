@@ -1,4 +1,5 @@
 import logging
+import time
 import uuid
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -53,7 +54,10 @@ async def chat(request: ChatRequest):
         
 
         logger.info("Invoking agent graph")
+        t_start = time.perf_counter()
         result = agent_graph.invoke(initial_state)
+        t_end = time.perf_counter()
+        logger.info(f"[TIMING] full agent_graph.invoke(): {t_end - t_start:.3f}s (route={result.get('route')})")
         answer = result.get("answer", "No answer generated")
 
         # Update session history
