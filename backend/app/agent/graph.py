@@ -1,4 +1,6 @@
+import functools
 import logging
+import time
 from langgraph.graph import StateGraph, END
 from app.agent.state import AgentState
 
@@ -15,6 +17,16 @@ from app.agent.nodes import (
 logger = logging.getLogger(__name__)
 
 MAX_RETRIES = 2
+
+def timed(name, fn):
+    @functools.wraps(fn)
+    def wrapper(state):
+        t0 = time.perf_counter()
+        result = fn(state)
+        elapsed = time.perf_counter() - t0
+        logger.info(f"[TIMING] node '{name}': {elapsed:.3f}s")
+        return result
+    return wrapper
 
 def route_after_router(state: AgentState) -> str:
     route = state.get("route", "rag")
@@ -52,13 +64,13 @@ def build_graph():
     logger.info("Building LangGraph agent graph")
     graph = StateGraph(AgentState)
 
-    graph.add_node("router", router_node)
-    graph.add_node("retriever", retriever_node)
-    graph.add_node("web_search", web_search_node)
-    graph.add_node("grader", grader_node)
-    graph.add_node("rewriter", rewriter_node)
-    graph.add_node("generator", generator_node)
-    graph.add_node("hallucination_checker", hallucination_checker_node)
+    graph.add_node("router", timed("router", router_node))
+    graph.add_node("retriever", timed("retriever", retriever_node))
+    graph.add_node("web_search", timed("web_search", web_search_node))
+    graph.add_node("grader", timed("grader", grader_node))
+    graph.add_node("rewriter", timed("rewriter", rewriter_node))
+    graph.add_node("generator", timed("generator", generator_node))
+    graph.add_node("hallucination_checker", timed("hallucination_checker", hallucination_checker_node))
 
     graph.set_entry_point("router")
 

@@ -111,6 +111,8 @@ pydantic_core==2.46.4
 Pygments==2.20.0
 pypdf==6.10.2
 pypdfium2==5.8.0
+pymupdf==1.26.5
+pytesseract==0.3.13
 PyPika==0.51.1
 pyproject_hooks==1.2.0
 python-dateutil==2.9.0.post0

@@ -1,7 +1,9 @@
 import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import chat, upload
+from app.services.vectorstore import clear_vectorstore
 
 logging.basicConfig(
     level=logging.INFO,
@@ -11,7 +13,18 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Agentic RAG API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Runs ONCE per server start (not per request) - cheap, no lag.
+    # Gives every new run a clean vectorstore, matching "restart = fresh session".
+    logger.info("Server starting - clearing vectorstore for a fresh session")
+    clear_vectorstore()
+    yield
+    logger.info("Server shutting down")
+
+
+app = FastAPI(title="Agentic RAG API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
