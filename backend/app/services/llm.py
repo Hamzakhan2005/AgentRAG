@@ -8,7 +8,7 @@ def get_llm(streaming: bool = False):
     logger.info(f"Initializing Groq LLM, streaming={streaming}")
     try:
         llm = ChatGroq(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             api_key=GROQ_API_KEY,
             temperature=0.2,
             streaming=streaming,
