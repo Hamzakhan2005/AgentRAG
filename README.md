@@ -338,7 +338,7 @@ Contributions and suggestions welcome — open an issue or PR.
 
 ## 📄 License
 
-This project currently has no license file. Add one (MIT is a common choice for portfolio projects) if you intend for others to reuse this code.
+This project currently has no license file. 
 
 ---
 
