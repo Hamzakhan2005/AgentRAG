@@ -8,8 +8,8 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 logger = logging.getLogger(__name__)
 
-CHUNK_SIZE = 500
-CHUNK_OVERLAP = 50
+CHUNK_SIZE = 1000   # was 500
+CHUNK_OVERLAP = 100  # was 50
 
 def _format_table(table: list) -> str:
     """Turn a pdfplumber table (list of rows) into readable 'Field: Value' /
