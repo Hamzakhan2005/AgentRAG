@@ -1,3 +1,4 @@
+
 import logging
 from langchain_core.messages import HumanMessage
 from app.services.llm import get_llm
@@ -6,7 +7,7 @@ from app.agent.state import AgentState
 logger = logging.getLogger(__name__)
 
 REWRITER_PROMPT = """You are a query rewriter. The original query did not retrieve relevant documents.
-Rewrite the query to be more specific and likely to find relevant information.
+Rewrite the query to be clearer and more specific in WORDING ONLY - do not invent or assume any facts not present in the original query (no years, numbers, names, or locations that weren't stated). If the original query doesn't mention a year, do NOT add one. If it mentions multiple items (e.g. two dates), keep the rewritten query asking about all of them, not just one.
 Reply with ONLY the rewritten query, nothing else.
 
 Original query: {query}"""

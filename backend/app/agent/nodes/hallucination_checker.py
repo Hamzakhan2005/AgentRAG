@@ -25,7 +25,7 @@ def hallucination_checker_node(state: AgentState) -> AgentState:
         return {**state}
 
     try:
-        context = "\n".join([doc.page_content[:300] for doc in docs])
+        context = "\n---\n".join(doc.page_content for doc in docs)  # full content, not [:300]
         llm = get_llm()
         messages = [HumanMessage(content=HALLUCINATION_PROMPT.format(
             answer=answer,
@@ -36,9 +36,17 @@ def hallucination_checker_node(state: AgentState) -> AgentState:
         logger.info(f"Hallucination check verdict: {verdict}")
 
         if verdict == "no":
-            logger.warning("Hallucination detected, flagging answer")
-            flagged_answer = f"[Warning: answer may not be fully supported by documents]\n\n{answer}"
-            return {**state, "answer": flagged_answer}
+            logger.warning("Hallucination detected, regenerating once with a stricter prompt")
+            strict_messages = [
+                HumanMessage(content=(
+                    f"Your previous answer may not be fully supported by the source documents below. "
+                    f"Re-answer the same question using ONLY facts explicitly present in these documents. "
+                    f"If a fact isn't there, say it's not available - do not guess.\n\n"
+                    f"Documents:\n{context}\n\nPrevious answer: {answer}"
+                ))
+            ]
+            retry = llm.invoke(strict_messages)
+            return {**state, "answer": retry.content}
 
         return {**state}
 
